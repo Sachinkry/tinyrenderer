@@ -79,5 +79,26 @@ std::ostream &operator<<(std::ostream &s, Vec3<t> &v)
     s << "(" << v.x << ", " << v.y << ", " << v.z << ")\n";
     return s;
 }
+// Rotation functions defined inline
+inline Vec3f rotateX(Vec3f v, float angle)
+{
+    float s = std::sin(angle);
+    float c = std::cos(angle);
+    return Vec3f(v.x, v.y * c - v.z * s, v.y * s + v.z * c);
+}
+
+inline Vec3f rotateY(Vec3f v, float angle)
+{
+    float s = std::sin(angle);
+    float c = std::cos(angle);
+    return Vec3f(v.x * c + v.z * s, v.y, -v.x * s + v.z * c);
+}
+
+inline Vec3f rotateZ(Vec3f v, float angle)
+{
+    float s = std::sin(angle);
+    float c = std::cos(angle);
+    return Vec3f(v.x * c - v.y * s, v.x * s + v.y * c, v.z);
+}
 
 #endif //__GEOMETRY_H__

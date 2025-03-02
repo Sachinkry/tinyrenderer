@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include "model.h"
+#include <cmath>
 
 Model::Model(const char *filename) : verts_(), faces_()
 {

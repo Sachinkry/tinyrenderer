@@ -2,6 +2,7 @@
 #define __IMAGE_H__
 
 #include <fstream>
+#include "geometry.h"
 
 #pragma pack(push, 1)
 struct TGA_Header
@@ -106,5 +107,8 @@ public:
     unsigned char *buffer();
     void clear();
 };
+
+void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color);
+TGAColor generateRandomColor(std::mt19937 &gen);
 
 #endif //__IMAGE_H__
