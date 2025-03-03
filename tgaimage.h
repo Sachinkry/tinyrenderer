@@ -108,7 +108,10 @@ public:
     void clear();
 };
 
-void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color);
+// void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color);
+void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color, float z0, float z1, float z2, float *zbuffer);
+Vec3f barycentric(Vec2i t0, Vec2i t1, Vec2i t2, Vec2i p);
+
 TGAColor generateRandomColor(std::mt19937 &gen);
 
 #endif //__IMAGE_H__
