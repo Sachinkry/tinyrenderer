@@ -236,7 +236,7 @@ int main(int argc, char **argv)
         if (facing <= 0)
             continue; // Skip back-facing triangles
 
-        // Compute intensity using light_dir
+        // Compute intensity using light_dir; for flat shading
         float intensity = std::max(0.f, normal * light_dir);
 
         // Scale materialColor by intensity
