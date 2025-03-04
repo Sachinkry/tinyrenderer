@@ -12,11 +12,15 @@ const TGAColor red = TGAColor(255, 0, 0, 255);
 const TGAColor green = TGAColor(0, 255, 0, 255);
 const TGAColor blue = TGAColor(0, 0, 255, 255);
 const TGAColor materialColor = TGAColor(139, 69, 19, 255);
-// const TGAColor color = TGAColor(255, 255, 255, 255);
-
+// const TGAColor materialColor = TGAColor(255, 255, 255, 255);
+const float ambient_coeff = 0.2f;  // Ambient coefficient
+const float diffuse_coeff = 0.7f;  // Diffuse coefficient
+const float specular_coeff = 0.5f; // Specular coefficient
+const float shininess = 10.0f;
 // light source
-const Vec3f light_dir(1, 1, -1);
+const Vec3f light_dir(0, 0, -1);
 const Vec3f view_dir(0, 0, -1);
+std::vector<Vec3f> vertexNormals;
 
 Model *model = NULL;
 const int width = 800;
@@ -51,112 +55,6 @@ void line(int x0, int y0, int x1, int y1, TGAImage &image, TGAColor color)
         }
     }
 }
-
-// int main(int argc, char **argv)
-// {
-//     if (2 == argc)
-//     {
-//         model = new Model(argv[1]);
-//     }
-//     else
-//     {
-//         model = new Model("obj/african_head.obj");
-//     }
-
-//     std::random_device rd;
-//     std::mt19937 gen(rd());
-
-//     TGAImage image(width, height, TGAImage::RGB);
-//     float *zbuffer = new float[width * height];
-//     std::fill(zbuffer, zbuffer + width * height, std::numeric_limits<float>::max());
-
-//     std::vector<Vec3f> vertexNormals(model->nverts(), Vec3f(0, 0, 0));
-//     std::map<int, std::vector<int>> vertexToFaces;
-
-//     for (int i = 0; i < model->nfaces(); i++)
-//     {
-//         std::vector<int> face = model->face(i);
-//         for (int j = 0; j < 3; j++)
-//         {
-//             vertexToFaces[face[j]].push_back(i);
-//         }
-//     }
-
-//     for (int i = 0; i < model->nfaces(); i++)
-//     {
-//         std::vector<int> face = model->face(i);
-//         Vec3f v0 = model->vert(face[0]);
-//         Vec3f v1 = model->vert(face[1]);
-//         Vec3f v2 = model->vert(face[2]);
-//         // Vec3f normal = (v1 - v0) ^ (v2 - v0); // Standard CCW order
-//         Vec3f normal = (v2 - v0) ^ (v1 - v0); // Reverse CW order
-//         normal.normalize();
-//         vertexNormals[face[0]] = vertexNormals[face[0]] + normal;
-//         vertexNormals[face[1]] = vertexNormals[face[1]] + normal;
-//         vertexNormals[face[2]] = vertexNormals[face[2]] + normal;
-//     }
-//     for (int i = 0; i < model->nverts(); i++)
-//     {
-//         vertexNormals[i].normalize();
-//     }
-
-//     Vec3f norm_light = light_dir;
-//     norm_light.normalize();
-
-//     for (int i = 0; i < model->nfaces(); i++)
-//     {
-//         std::vector<int> face = model->face(i);
-//         Vec3f v0 = model->vert(face[0]);
-//         Vec3f v1 = model->vert(face[1]);
-//         Vec3f v2 = model->vert(face[2]);
-
-//         Vec3f edge1 = v1 - v0;
-//         Vec3f edge2 = v2 - v0;
-//         Vec3f normal = edge2 ^ edge1;
-//         // Vec3f normal = edge1 ^ edge2;
-//         normal.normalize();
-
-//         // Use view_dir for culling, light_dir for intensity
-//         float facing = normal * view_dir; // Correct culling direction
-//         // std::cout << "Face " << i << ": Normal (" << normal.x << ", " << normal.y << ", " << normal.z << "), Facing: " << facing << std::endl;
-//         if (facing <= 0)
-//             continue; // Cull back faces
-
-//         float n = normal * light_dir;
-//         float intensity0 = std::max(0.f, vertexNormals[face[0]] * light_dir);
-//         float intensity1 = std::max(0.f, vertexNormals[face[1]] * light_dir);
-//         float intensity2 = std::max(0.f, vertexNormals[face[2]] * light_dir);
-
-//         int x0 = (v0.x + 1.) * width / 2.;
-//         int y0 = (v0.y + 1.) * height / 2.;
-//         int x1 = (v1.x + 1.) * width / 2.;
-//         int y1 = (v1.y + 1.) * height / 2.;
-//         int x2 = (v2.x + 1.) * width / 2.;
-//         int y2 = (v2.y + 1.) * height / 2.;
-
-//         // Use per-pixel Phong shading by passing vertex normals:
-//         trianglePhong(
-//             Vec2i(x0, y0), Vec2i(x1, y1), Vec2i(x2, y2),
-//             image, materialColor,
-//             v0.z, v1.z, v2.z,
-//             vertexNormals[face[0]], vertexNormals[face[1]], vertexNormals[face[2]],
-//             zbuffer, norm_light);
-//         if (intensity0 > 0 || intensity1 > 0 || intensity2 > 0)
-//         {
-//             // triangle(Vec2i(x0, y0), Vec2i(x1, y1), Vec2i(x2, y2), image, materialColor,
-//             //  v0.z, v1.z, v2.z, intensity0, intensity1, intensity2, zbuffer);
-//             // line(x0, y0, x1, y1, image, white);
-//             // line(x1, y1, x2, y2, image, white);
-//             // line(x2, y2, x0, y0, image, white);
-//         }
-//     }
-
-//     image.flip_vertically();
-//     image.write_tga_file("output.tga");
-//     delete[] zbuffer;
-//     delete model;
-//     return 0;
-// }
 
 void triangle1(Vec3f t0, Vec3f t1, Vec3f t2, TGAImage &image, TGAColor color, float *zbuffer)
 {
@@ -193,6 +91,78 @@ void triangle1(Vec3f t0, Vec3f t1, Vec3f t2, TGAImage &image, TGAColor color, fl
     }
 }
 
+void triangleGouraud(Vec3f t0, Vec3f t1, Vec3f t2, TGAImage &image, TGAColor baseColor, float *zbuffer,
+                     float i0, float i1, float i2)
+{
+    int minX = std::max(0, (int)std::min(t0.x, std::min(t1.x, t2.x)));
+    int maxX = std::min(image.get_width() - 1, (int)std::max(t0.x, std::max(t1.x, t2.x)));
+    int minY = std::max(0, (int)std::min(t0.y, std::min(t1.y, t2.y)));
+    int maxY = std::min(image.get_height() - 1, (int)std::max(t0.y, std::max(t1.y, t2.y)));
+
+    Vec3f P;
+    for (P.x = minX; P.x <= maxX; P.x++)
+    {
+        for (P.y = minY; P.y <= maxY; P.y++)
+        {
+            Vec3f bc = barycentric(t0, t1, t2, P);
+            if (bc.x < 0 || bc.y < 0 || bc.z < 0)
+                continue;
+            P.z = t0.z * bc.x + t1.z * bc.y + t2.z * bc.z; // Interpolate z for depth
+            int idx = int(P.x + P.y * image.get_width());
+            if (zbuffer[idx] < P.z)
+            {
+                zbuffer[idx] = P.z;
+                float intensity = i0 * bc.x + i1 * bc.y + i2 * bc.z; // Interpolate intensity
+                TGAColor color = TGAColor(
+                    static_cast<unsigned char>(baseColor.r * intensity),
+                    static_cast<unsigned char>(baseColor.g * intensity),
+                    static_cast<unsigned char>(baseColor.b * intensity),
+                    255);
+                image.set(P.x, P.y, color);
+            }
+        }
+    }
+}
+
+void trianglePhong(Vec3f t0, Vec3f t1, Vec3f t2, TGAImage &image, TGAColor baseColor, float *zbuffer,
+                   Vec3f n0, Vec3f n1, Vec3f n2, Vec3f lightDir)
+{
+    int minX = std::max(0, (int)std::min(t0.x, std::min(t1.x, t2.x)));
+    int maxX = std::min(image.get_width() - 1, (int)std::max(t0.x, std::max(t1.x, t2.x)));
+    int minY = std::max(0, (int)std::min(t0.y, std::min(t1.y, t2.y)));
+    int maxY = std::min(image.get_height() - 1, (int)std::max(t0.y, std::max(t1.y, t2.y)));
+
+    Vec3f P;
+    for (P.x = minX; P.x <= maxX; P.x++)
+    {
+        for (P.y = minY; P.y <= maxY; P.y++)
+        {
+            Vec3f bc = barycentric(t0, t1, t2, P);
+            if (bc.x < 0 || bc.y < 0 || bc.z < 0)
+                continue;
+            P.z = t0.z * bc.x + t1.z * bc.y + t2.z * bc.z;
+            int idx = int(P.x + P.y * image.get_width());
+            if (zbuffer[idx] < P.z)
+            {
+                zbuffer[idx] = P.z;
+                Vec3f normal = (n0 * bc.x + n1 * bc.y + n2 * bc.z); // No normalization after interpolation
+                float ambient = std::min(1.0f, ambient_coeff);
+                float diffuse = std::min(1.0f, std::max(0.0f, normal * lightDir) * diffuse_coeff);
+                float n_dot_l = std::max(0.0f, normal * lightDir);
+                Vec3f reflectDir = (normal * (2.0f * n_dot_l) - lightDir).normalize();
+                float specular = std::min(1.0f, std::pow(std::max(0.0f, reflectDir * view_dir), shininess) * specular_coeff);
+                float intensity = ambient + diffuse + specular;
+                intensity = std::min(1.0f, intensity);
+                TGAColor color = TGAColor(
+                    static_cast<unsigned char>(baseColor.r * intensity),
+                    static_cast<unsigned char>(baseColor.g * intensity),
+                    static_cast<unsigned char>(baseColor.b * intensity),
+                    255);
+                image.set(P.x, P.y, color);
+            }
+        }
+    }
+}
 Vec3f world2screen(Vec3f v)
 {
     return Vec3f(int((v.x + 1.) * width / 2. + .5), int((v.y + 1.) * height / 2. + .5), v.z);
@@ -214,6 +184,38 @@ int main(int argc, char **argv)
         ;
 
     TGAImage image(width, height, TGAImage::RGB);
+
+    // Map to store which faces share each vertex
+    std::map<int, std::vector<int>> vertexToFaces;
+    for (int i = 0; i < model->nfaces(); i++)
+    {
+        std::vector<int> face = model->face(i);
+        for (int j = 0; j < 3; j++)
+        {
+            vertexToFaces[face[j]].push_back(i);
+        }
+    }
+
+    // Resize vertexNormals to hold a normal for each vertex and compute averages
+    vertexNormals.resize(model->nverts(), Vec3f(0, 0, 0));
+    for (int vertIdx = 0; vertIdx < model->nverts(); vertIdx++)
+    {
+        const std::vector<int> &faces = vertexToFaces[vertIdx];
+        for (int faceIdx : faces)
+        {
+            std::vector<int> face = model->face(faceIdx);
+            Vec3f v0 = model->vert(face[0]);
+            Vec3f v1 = model->vert(face[1]);
+            Vec3f v2 = model->vert(face[2]);
+            Vec3f edge1 = v1 - v0;
+            Vec3f edge2 = v2 - v0;
+            Vec3f normal = edge2 ^ edge1; // Cross product for face normal
+            normal.normalize();
+            vertexNormals[vertIdx] = vertexNormals[vertIdx] + normal;
+        }
+        vertexNormals[vertIdx].normalize(); // Normalize the average normal
+    }
+
     for (int i = 0; i < model->nfaces(); i++)
     {
         std::vector<int> face = model->face(i);
@@ -244,6 +246,11 @@ int main(int argc, char **argv)
             static_cast<unsigned char>(materialColor.b * intensity),
             255);
 
+        // Compute intensity for each vertex using vertex normals
+        float intensity0 = std::max(0.f, vertexNormals[face[0]] * light_dir);
+        float intensity1 = std::max(0.f, vertexNormals[face[1]] * light_dir);
+        float intensity2 = std::max(0.f, vertexNormals[face[2]] * light_dir);
+
         Vec3f pts[3];
         // std::cout << pts[0] << std::endl;
         for (int j = 0; j < 3; j++)
@@ -252,8 +259,12 @@ int main(int argc, char **argv)
 
             // std::cout << pts[i] << std::endl;
         }
+        Vec3f normLightDir = light_dir;
+        normLightDir.normalize();
 
-        triangle1(pts[0], pts[1], pts[2], image, color, zbuffer);
+        // triangle1(pts[0], pts[1], pts[2], image, color, zbuffer);
+        // triangleGouraud(pts[0], pts[1], pts[2], image, materialColor, zbuffer, intensity0, intensity1, intensity2);
+        trianglePhong(pts[0], pts[1], pts[2], image, materialColor, zbuffer, vertexNormals[face[0]], vertexNormals[face[1]], vertexNormals[face[2]], normLightDir);
     }
 
     image.flip_vertically(); // i want to have the origin at the left bottom corner of the image

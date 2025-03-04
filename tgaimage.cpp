@@ -516,20 +516,15 @@ bool TGAImage::scale(int w, int h)
 //     }
 // }
 
-Vec3f barycentric(Vec3f t0, Vec3f t1, Vec3f t2, Vec3f p)
+Vec3f barycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P)
 {
-    Vec3f u = Vec3f(t1.x - t0.x, t2.x - t0.x, t0.x - p.x) ^ Vec3f(t1.y - t0.y, t2.y - t0.y, t0.y - p.y);
+    Vec3f s[2];
+    s[0] = Vec3f(C.x - A.x, B.x - A.x, A.x - P.x);
+    s[1] = Vec3f(C.y - A.y, B.y - A.y, A.y - P.y);
+    Vec3f u = s[0] ^ s[1];
     if (std::abs(u.z) < 1e-2)
         return Vec3f(-1, 1, 1); // Degenerate triangle
-    return Vec3f(1.f - (u.x + u.y) / u.z, u.x / u.z, u.y / u.z);
-}
-
-Vec3f barycentric2D(Vec2i t0, Vec2i t1, Vec2i t2, Vec2i p)
-{
-    Vec3f u = Vec3f(t1.x - t0.x, t2.x - t0.x, t0.x - p.x) ^ Vec3f(t1.y - t0.y, t2.y - t0.y, t0.y - p.y);
-    if (std::abs(u.z) < 1e-2)
-        return Vec3f(-1, 1, 1); // Degenerate triangle
-    return Vec3f(1.f - (u.x + u.y) / u.z, u.x / u.z, u.y / u.z);
+    return Vec3f(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
 }
 
 TGAColor generateRandomColor(std::mt19937 &gen)
