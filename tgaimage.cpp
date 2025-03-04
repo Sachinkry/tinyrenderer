@@ -5,8 +5,11 @@
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <map>
 #include "tgaimage.h"
 #include "geometry.h"
+
+const TGAColor materialColor = TGAColor(139, 69, 19, 255);
 
 TGAImage::TGAImage() : data(NULL), width(0), height(0), bytespp(0)
 {
@@ -429,38 +432,99 @@ bool TGAImage::scale(int w, int h)
     return true;
 }
 
-void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color, float z0, float z1, float z2, float *zbuffer)
-{
-    // Bounding box
-    int minX = std::min(t0.x, std::min(t1.x, t2.x));
-    int maxX = std::max(t0.x, std::max(t1.x, t2.x));
-    int minY = std::min(t0.y, std::min(t1.y, t2.y));
-    int maxY = std::max(t0.y, std::max(t1.y, t2.y));
-    minX = std::max(0, minX);
-    maxX = std::min(image.get_width() - 1, maxX);
-    minY = std::max(0, minY);
-    maxY = std::min(image.get_height() - 1, maxY);
+// void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color,
+//               float z0, float z1, float z2, float i0, float i1, float i2, float *zbuffer)
+// {
+//     int minX = std::min(t0.x, std::min(t1.x, t2.x));
+//     int maxX = std::max(t0.x, std::max(t1.x, t2.x));
+//     int minY = std::min(t0.y, std::min(t1.y, t2.y));
+//     int maxY = std::max(t0.y, std::max(t1.y, t2.y));
+//     minX = std::max(0, minX);
+//     maxX = std::min(image.get_width() - 1, maxX);
+//     minY = std::max(0, minY);
+//     maxY = std::min(image.get_height() - 1, maxY);
 
-    // Barycentric coordinates for filling
-    for (int px = minX; px <= maxX; px++)
-    {
-        for (int py = minY; py <= maxY; py++)
-        {
-            Vec3f bc = barycentric(t0, t1, t2, Vec2i(px, py));
-            if (bc.x >= 0 && bc.y >= 0 && bc.z >= 0)
-            {                                                // Inside triangle
-                float z = z0 * bc.x + z1 * bc.y + z2 * bc.z; // Interpolate z
-                int idx = px + py * image.get_width();
-                if (z < zbuffer[idx])
-                { // Closer than current z
-                    zbuffer[idx] = z;
-                    image.set(px, py, color);
-                }
-            }
-        }
-    }
+//     for (int px = minX; px <= maxX; px++)
+//     {
+//         for (int py = minY; py <= maxY; py++)
+//         {
+//             Vec3f bc = barycentric2D(t0, t1, t2, Vec2i(px, py));
+//             if (bc.x >= 0 && bc.y >= 0 && bc.z >= 0)
+//             {
+//                 float z = z0 * bc.x + z1 * bc.y + z2 * bc.z;
+//                 int idx = px + py * image.get_width();
+//                 if (z < zbuffer[idx])
+//                 {
+//                     float intensity = i0 * bc.x + i1 * bc.y + i2 * bc.z; // Interpolate intensity
+//                     // log in console: i, bc.x, bc.y, bc.z, intensity
+//                     std::cout << "Intensity: " << intensity << std::endl;
+
+//                     std::cout << "Intensity: " << intensity << std::endl;
+//                     TGAColor shadedColor(
+//                         std::min(255, (int)(color.r * intensity)), // Clamp to 255
+//                         std::min(255, (int)(color.g * intensity)),
+//                         std::min(255, (int)(color.b * intensity)),
+//                         255);
+//                     zbuffer[idx] = z;
+//                     image.set(px, py, shadedColor);
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// void trianglePhong(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color,
+//                    float z0, float z1, float z2,
+//                    const Vec3f &n0, const Vec3f &n1, const Vec3f &n2,
+//                    float *zbuffer, const Vec3f &light_dir)
+// {
+//     int minX = std::min(t0.x, std::min(t1.x, t2.x));
+//     int maxX = std::max(t0.x, std::max(t1.x, t2.x));
+//     int minY = std::min(t0.y, std::min(t1.y, t2.y));
+//     int maxY = std::max(t0.y, std::max(t1.y, t2.y));
+//     minX = std::max(0, minX);
+//     maxX = std::min(image.get_width() - 1, maxX);
+//     minY = std::max(0, minY);
+//     maxY = std::min(image.get_height() - 1, maxY);
+
+//     for (int px = minX; px <= maxX; px++)
+//     {
+//         for (int py = minY; py <= maxY; py++)
+//         {
+//             Vec3f bc = barycentric(t0, t1, t2, Vec2i(px, py));
+//             if (bc.x < 0 || bc.y < 0 || bc.z < 0)
+//                 continue;
+//             float z = z0 * bc.x + z1 * bc.y + z2 * bc.z;
+//             int idx = px + py * image.get_width();
+//             if (z < zbuffer[idx])
+//             {
+//                 // Interpolate vertex normals per pixel
+//                 Vec3f n = n0 * bc.x + n1 * bc.y + n2 * bc.z;
+//                 n.normalize();
+//                 // Compute lighting intensity
+//                 float intensity = std::max(0.1f, n * light_dir);
+//                 // Apply the intensity to the material color
+//                 TGAColor shadedColor(
+//                     std::min(255, int(color.r * intensity)),
+//                     std::min(255, int(color.g * intensity)),
+//                     std::min(255, int(color.b * intensity)),
+//                     255);
+//                 zbuffer[idx] = z;
+//                 image.set(px, py, shadedColor);
+//             }
+//         }
+//     }
+// }
+
+Vec3f barycentric(Vec3f t0, Vec3f t1, Vec3f t2, Vec3f p)
+{
+    Vec3f u = Vec3f(t1.x - t0.x, t2.x - t0.x, t0.x - p.x) ^ Vec3f(t1.y - t0.y, t2.y - t0.y, t0.y - p.y);
+    if (std::abs(u.z) < 1e-2)
+        return Vec3f(-1, 1, 1); // Degenerate triangle
+    return Vec3f(1.f - (u.x + u.y) / u.z, u.x / u.z, u.y / u.z);
 }
-Vec3f barycentric(Vec2i t0, Vec2i t1, Vec2i t2, Vec2i p)
+
+Vec3f barycentric2D(Vec2i t0, Vec2i t1, Vec2i t2, Vec2i p)
 {
     Vec3f u = Vec3f(t1.x - t0.x, t2.x - t0.x, t0.x - p.x) ^ Vec3f(t1.y - t0.y, t2.y - t0.y, t0.y - p.y);
     if (std::abs(u.z) < 1e-2)
