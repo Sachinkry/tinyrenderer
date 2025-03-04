@@ -262,7 +262,7 @@ int main(int argc, char **argv)
         Vec3f normLightDir = light_dir;
         normLightDir.normalize();
 
-        // triangle1(pts[0], pts[1], pts[2], image, color, zbuffer);
+        // triangle1(pts[0], pts[1], pts[2], image, color, zbuffer); // flat shading
         // triangleGouraud(pts[0], pts[1], pts[2], image, materialColor, zbuffer, intensity0, intensity1, intensity2);
         trianglePhong(pts[0], pts[1], pts[2], image, materialColor, zbuffer, vertexNormals[face[0]], vertexNormals[face[1]], vertexNormals[face[2]], normLightDir);
     }
