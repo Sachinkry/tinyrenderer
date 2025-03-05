@@ -3,7 +3,7 @@ bin/
 *.o
 *.out
 *.exe
-# *main.dSYM/
+*.dSYM/
 
 .vscode/
 # Ignore generated images and logs
@@ -14,4 +14,4 @@ profile.txt
 .DS_Store
 Thumbs.db
 
-main.dSYM/Contents
+
