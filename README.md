@@ -15,20 +15,29 @@ Wireframes:
 <div style="display: flex; gap: 10px;">
   <img src="samples/image-1.png" width="300">
   <img src="samples/image-2.png" width="300">
-  <img src="samples/image.png" width="400">
+  <img src="samples/image.png" width="300">
 </div>
 
 Here are some sample outputs demonstrating different shading techniques:
 
-Flat Shading ⬇️
-<img src="samples/image-3.png" width="200">
-Gouraud Shading⬇️
-<img src="samples/image-4.png" width="200">
-Phong Shading⬇️
-<img src="samples/image-5.png" width="200">
+<table>
+  <tr>
+    <td>Flat Shading</td>
+    <td>Gouraud Shading</td>
+    <td>Phong Shading</td>
+  </tr>
+  <tr>
+    <td><img src="samples/image-3.png" width="400"></td>
+    <td><img src="samples/image-4.png" width="400"></td>
+    <td><img src="samples/image-5.png" width="400"></td>
+  </tr>
+</table>
 
 Diablo3 Character:
-<img src="samples/diable3_pose_nm.png" width="400">
+
+<div>
+  <img src="samples/diable3_pose_nm.png" width="400">
+</div>
 
 1.  Clone the repository:
 
