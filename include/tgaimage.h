@@ -2,6 +2,7 @@
 #define __IMAGE_H__
 
 #include <fstream>
+#include <random>
 #include "geometry.h"
 
 #pragma pack(push, 1)
@@ -110,17 +111,17 @@ public:
 
 // void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color);
 // void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color, float z0, float z1, float z2, float *zbuffer);
-void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color,
-              float z0, float z1, float z2, float i0, float i1, float i2, float *zbuffer);
+// void triangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color,
+//               float z0, float z1, float z2, float i0, float i1, float i2, float *zbuffer);
 
-void triangle1(Vec3i t0, Vec3i t1, Vec3i t2, TGAImage &image, TGAColor color, float *zbuffer);
+// void triangle1(Vec3i t0, Vec3i t1, Vec3i t2, TGAImage &image, TGAColor color, float *zbuffer);
 
-void trianglePhong(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color,
-                   float z0, float z1, float z2,
-                   const Vec3f &n0, const Vec3f &n1, const Vec3f &n2,
-                   float *zbuffer, const Vec3f &light_dir);
+// void trianglePhong(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image, TGAColor color,
+//                    float z0, float z1, float z2,
+//                    const Vec3f &n0, const Vec3f &n1, const Vec3f &n2,
+//                    float *zbuffer, const Vec3f &light_dir);
 
-Vec3f barycentric(Vec3f t0, Vec3f t1, Vec3f t2, Vec3f p);
+// Vec3f barycentric(Vec3f t0, Vec3f t1, Vec3f t2, Vec3f p);
 
 TGAColor generateRandomColor(std::mt19937 &gen);
 

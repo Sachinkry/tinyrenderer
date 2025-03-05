@@ -4,8 +4,9 @@ bin/
 *.out
 *.exe
 *.dSYM/
+main
 
-.vscode/
+*.vscode/
 # Ignore generated images and logs
 *.json
 profile.txt
@@ -14,4 +15,4 @@ profile.txt
 .DS_Store
 Thumbs.db
 
-
+build/

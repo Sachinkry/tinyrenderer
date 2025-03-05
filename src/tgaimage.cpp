@@ -432,17 +432,6 @@ bool TGAImage::scale(int w, int h)
     return true;
 }
 
-Vec3f barycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P)
-{
-    Vec3f s[2];
-    s[0] = Vec3f(C.x - A.x, B.x - A.x, A.x - P.x);
-    s[1] = Vec3f(C.y - A.y, B.y - A.y, A.y - P.y);
-    Vec3f u = s[0] ^ s[1];
-    if (std::abs(u.z) < 1e-2)
-        return Vec3f(-1, 1, 1); // Degenerate triangle
-    return Vec3f(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
-}
-
 TGAColor generateRandomColor(std::mt19937 &gen)
 {
     std::uniform_int_distribution<> dis(0, 255); // Distribution for 0-255
