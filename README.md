@@ -10,26 +10,31 @@ A minimal software rasterizer in C++
 
 ## Sample Outputs
 
+Wireframes:
+
+<div style="display: flex; gap: 10px;">
+  <img src="samples/image-1.png" width="300">
+  <img src="samples/image-2.png" width="300">
+  <img src="samples/diablo3_pose_nm.png" width="400">
+</div>
+
 Here are some sample outputs demonstrating different shading techniques:
 
-<table>
+table>
+
   <tr>
-    <td><img src="https://pplx-res.cloudinary.com/image/upload/w_200,c_fit/v1741199849/user_uploads/bzhZyzqHunpRHBV/Screenshot-2025-03-06-at-12.07.12-AM.jpg" width="200"></td>
-    <td><img src="https://pplx-res.cloudinary.com/image/upload/w_200,c_fit/v1741200673/user_uploads/olQkorxSooIWhLQ/Screenshot-2025-03-06-at-12.20.36-AM.jpg" width="200"></td>
-    <td><img src="https://pplx-res.cloudinary.com/image/upload/w_200,c_fit/v1741200691/user_uploads/fJDmoQcbTYCGsBr/Screenshot-2025-03-06-at-12.20.36-AM.jpg" width="200"></td>
+    <td><img src="samples/image-3.png" width="200"></td>
+    <td><img src="samples/image-4.png" width="200"></td>
+    <td><img src="samples/image-5.png" width="200"></td>
   </tr>
   <tr>
-    <td><img src="https://pplx-res.cloudinary.com/image/upload/w_200,c_fit/v1741200691/user_uploads/fJDmoQcbTYCGsBr/Screenshot-2025-03-06-at-12.20.36-AM.jpg" width="200"></td>
-    <td><img src="https://pplx-res.cloudinary.com/image/upload/w_200,c_fit/v1741200691/user_uploads/fJDmoQcbTYCGsBr/Screenshot-2025-03-06-at-12.20.36-AM.jpg" width="200"></td>
-    <td><img src="https://pplx-res.cloudinary.com/image/upload/w_200,c_fit/v1741200691/user_uploads/fJDmoQcbTYCGsBr/Screenshot-2025-03-06-at-12.20.36-AM.jpg" width="200"></td>
-  </tr>
-  <tr>
-    <td>Flat Shading</td>
-    <td>Gouraud Shading</td>
-    <td>Phong Shading</td>
+     <td>Flat Shading</td>
+     <td>Gouraud Shading</td>
+     <td>Phong Shading</td>
   </tr>
 </table>
-## Installation & Usage
+
+![alt text](samples/diable3_pose_nm.png)
 
 1.  Clone the repository:
 
