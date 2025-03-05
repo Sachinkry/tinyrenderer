@@ -163,6 +163,42 @@ void trianglePhong(Vec3f t0, Vec3f t1, Vec3f t2, TGAImage &image, TGAColor baseC
         }
     }
 }
+
+void triangleTexture(Vec3f t0, Vec3f t1, Vec3f t2, Vec2f uv0, Vec2f uv1, Vec2f uv2,
+                     TGAImage &image, TGAImage &texture, float *zbuffer)
+{
+    int minX = std::max(0, (int)std::min(t0.x, std::min(t1.x, t2.x)));
+    int maxX = std::min(image.get_width() - 1, (int)std::max(t0.x, std::max(t1.x, t2.x)));
+    int minY = std::max(0, (int)std::min(t0.y, std::min(t1.y, t2.y)));
+    int maxY = std::min(image.get_height() - 1, (int)std::max(t0.y, std::max(t1.y, t2.y)));
+
+    Vec3f P;
+    for (P.x = minX; P.x <= maxX; P.x++)
+    {
+        for (P.y = minY; P.y <= maxY; P.y++)
+        {
+            Vec3f bc = barycentric(t0, t1, t2, P);
+            if (bc.x < 0 || bc.y < 0 || bc.z < 0)
+                continue;
+            P.z = t0.z * bc.x + t1.z * bc.y + t2.z * bc.z;
+
+            // Interpolate texture coordinates
+            Vec2f uv = uv0 * bc.x + uv1 * bc.y + uv2 * bc.z;
+            int idx = int(P.x + P.y * image.get_width());
+            if (zbuffer[idx] < P.z)
+            {
+                zbuffer[idx] = P.z;
+                int tex_x = static_cast<int>(uv.x * texture.get_width());
+                int tex_y = static_cast<int>(uv.y * texture.get_height());
+                tex_x = std::max(0, std::min(tex_x, texture.get_width() - 1));
+                tex_y = std::max(0, std::min(tex_y, texture.get_height() - 1));
+                TGAColor color = texture.get(tex_x, tex_y);
+                image.set(P.x, P.y, color);
+            }
+        }
+    }
+}
+
 Vec3f world2screen(Vec3f v)
 {
     return Vec3f(int((v.x + 1.) * width / 2. + .5), int((v.y + 1.) * height / 2. + .5), v.z);
@@ -176,8 +212,12 @@ int main(int argc, char **argv)
     }
     else
     {
-        model = new Model("obj/african_head.obj");
+        model = new Model("obj/diablo3_pose.obj");
     }
+
+    TGAImage texture;
+    texture.read_tga_file("obj/diablo3_pose_nm.tga");
+    texture.flip_vertically();
 
     float *zbuffer = new float[width * height];
     for (int i = width * height; i--; zbuffer[i] = -std::numeric_limits<float>::max())
@@ -219,11 +259,16 @@ int main(int argc, char **argv)
     for (int i = 0; i < model->nfaces(); i++)
     {
         std::vector<int> face = model->face(i);
+        std::vector<int> tex_face = model->tex_face(i);
 
         // Get 3D coordinates of the triangle's vertices
         Vec3f v0 = model->vert(face[0]);
         Vec3f v1 = model->vert(face[1]);
         Vec3f v2 = model->vert(face[2]);
+        // Get texture coordinates using texture indices
+        Vec2f uv0 = model->tex_coord(tex_face[0]);
+        Vec2f uv1 = model->tex_coord(tex_face[1]);
+        Vec2f uv2 = model->tex_coord(tex_face[2]);
 
         // Compute face normal
         Vec3f edge1 = v1 - v0;
@@ -264,11 +309,12 @@ int main(int argc, char **argv)
 
         // triangle1(pts[0], pts[1], pts[2], image, color, zbuffer); // flat shading
         // triangleGouraud(pts[0], pts[1], pts[2], image, materialColor, zbuffer, intensity0, intensity1, intensity2);
-        trianglePhong(pts[0], pts[1], pts[2], image, materialColor, zbuffer, vertexNormals[face[0]], vertexNormals[face[1]], vertexNormals[face[2]], normLightDir);
+        // trianglePhong(pts[0], pts[1], pts[2], image, materialColor, zbuffer, vertexNormals[face[0]], vertexNormals[face[1]], vertexNormals[face[2]], normLightDir);
+        triangleTexture(pts[0], pts[1], pts[2], uv0, uv1, uv2, image, texture, zbuffer);
     }
 
     image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-    image.write_tga_file("output.tga");
+    image.write_tga_file("obj/diablo3_pose_diffuse_texture.tga");
     delete model;
     return 0;
 }
