@@ -314,7 +314,7 @@ int main(int argc, char **argv)
     }
 
     image.flip_vertically(); // i want to have the origin at the left bottom corner of the image
-    image.write_tga_file("obj/diablo3_pose_diffuse_texture.tga");
+    image.write_tga_file("obj/diablo3_pose_phong.tga");
     delete model;
     return 0;
 }

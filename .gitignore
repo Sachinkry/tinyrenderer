@@ -1,0 +1,17 @@
+# Ignore build artifacts
+bin/
+*.o
+*.out
+*.exe
+# *main.dSYM/
+
+.vscode/
+# Ignore generated images and logs
+*.json
+profile.txt
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+main.dSYM/Contents
