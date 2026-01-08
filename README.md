@@ -11,14 +11,19 @@ A minimal software rasterizer in C++
 ## Sample Outputs
 
 Wireframes:
-
-<div style="display: flex; gap: 10px;">
-  <img src="samples/image-1.png" width="300">
-  <img src="samples/image-2.png" width="300">
-  <img src="samples/image.png" width="300">
-</div>
-
-Here are some sample outputs demonstrating different shading techniques:
+<table>
+  <tr> 
+    <td>Wireframe</td>
+    <td>Wireframe</td>
+    <td>Wireframe</td>
+  </tr>
+<tr>
+    <td><img src="samples/image-1.png" width="400"></td>
+    <td><img src="samples/image-2.png" width="400"></td>
+    <td><img src="samples/image.png" width="400"></td>
+  </tr>
+</table>
+<!-- Here are some sample outputs demonstrating different shading techniques: -->
 
 <table>
   <tr>
